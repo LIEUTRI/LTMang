@@ -1,0 +1,102 @@
+package main;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Currency;
+import java.util.Locale;
+import java.util.Scanner;
+
+public class ServerTask extends Thread{
+	private Socket s;
+	public ServerTask(Socket s){
+		this.s = s;
+	}
+	public void run() {
+		try {
+			InputStream is = s.getInputStream();
+			OutputStream os = s.getOutputStream();
+			int check = 0;
+			
+			while(true) {
+				byte[] b = new byte[1000];
+				check = is.read(b);
+				String cmd = new String(b).trim();
+				String phonenumber = cmd.substring(0,cmd.indexOf(" "));
+				String request = cmd.substring(cmd.indexOf(" ")+1, cmd.lastIndexOf(" "));
+				String amount = cmd.substring(cmd.lastIndexOf(" ")+1);
+				System.out.println("phone: "+phonenumber+", req: "+request+", amount: "+amount);
+				
+				double price = 20000000;
+		        Locale locale = new Locale("vi", "VN");
+		        Currency currency = Currency.getInstance("VND");
+
+		        DecimalFormatSymbols df = DecimalFormatSymbols.getInstance(locale);
+		        df.setCurrency(currency);
+		        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+		        numberFormat.setCurrency(currency);
+		        				
+				if(cmd.indexOf("RUT") >= 0) {
+					updateAccountBalance(phonenumber, amount);
+//					String notify = "Amount: "+formatter.format(Double.parseDouble(amount))+"VND\n"+"Balance: "+getAccountBalance(phonenumber)+"VND";
+//					os.write(notify.getBytes());
+				} else if(cmd.indexOf("KT") >= 0) {
+//					String report = "Balance: " + formatter.format(Double.parseDouble(getAccountBalance(phonenumber))+"VND");
+//					os.write(report.getBytes());
+				}
+			}
+		} catch (IOException e) {
+		}
+	}
+	
+	private String getAccountBalance(String phone) {
+		File file = new File(new File("resources").getAbsolutePath()+"/account.txt");
+		try {
+			Scanner sc = new Scanner(file);
+			while(sc.hasNextLine()) {
+				String s = sc.nextLine().trim();
+				if(s.indexOf(phone) >= 0) {
+					return s.substring(s.indexOf("BALANCE")+7);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Error! File "+new File("resources").getAbsolutePath()+"/account.conf not found!");
+		}
+		return "";
+	}
+	
+	private void updateAccountBalance(String phone, String amount) {
+		File file = new File(new File("resources").getAbsolutePath()+"/account.txt");
+		try {
+			Scanner sc = new Scanner(file);
+			while(sc.hasNextLine()) {
+				String s = sc.nextLine().trim();
+				if(s.indexOf(phone) >= 0) {
+					String oldBalance = s.substring(s.indexOf("BALANCE")+7);
+					String newBalance = (Integer.parseInt(oldBalance)-Integer.parseInt(amount))+"";
+					
+					Path path = Paths.get(new File("resources").getAbsolutePath()+"/account.txt");
+					String content;
+					try {
+						content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+						content = content.replace("PHONE"+phone+" BALANCE"+oldBalance, "PHONE"+phone+" BALANCE"+newBalance);
+						Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Error! File "+new File("resources").getAbsolutePath()+"/account.conf not found!");
+		}
+	}
+}

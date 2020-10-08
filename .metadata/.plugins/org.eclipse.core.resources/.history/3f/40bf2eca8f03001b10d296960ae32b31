@@ -1,0 +1,44 @@
+package main;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class ATMClient {
+	public static String host = "127.0.0.1";
+	public static int port = 1998;
+	public static void main(String[] args) {
+		File fileConfig = new File(System.getProperty("user.dir")+"/src/config/client.conf");
+		
+		try {
+			Scanner sc = new Scanner(fileConfig);
+			while(sc.hasNextLine()) {
+				String s = sc.nextLine().trim();
+				if(s.indexOf("PORT") >= 0) {
+					port = Integer.parseInt(s.substring(s.indexOf("=")+1));
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Error! File "+System.getProperty("user.dir")+"/src/config/client.conf not found!");
+			return;
+		}
+		/////////////////////////////////////////////////////////////////
+		
+		String phonenumber = getUserPhoneNumber();
+	}
+	private static String getUserPhoneNumber() {
+		File fileUserData = new File(System.getProperty("user.dir")+"/src/data/userdata.txt");
+		try {
+			Scanner sc = new Scanner(fileUserData);
+			while(sc.hasNextLine()) {
+				String s = sc.nextLine().trim();
+				if(s.indexOf("PHONE") >= 0) {
+					return s.substring(s.indexOf("=")+1);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Error! File "+System.getProperty("user.dir")+"/src/config/client.conf not found!");
+		}
+		return "";
+	}
+}
