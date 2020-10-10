@@ -29,9 +29,11 @@
 		<item key="FatJarPackageWizardPage.ANTSCRIPT_SAVE" value="false"/>
 		<item key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION" value="D:\LTMang\eclipse-workspace"/>
 		<item key="FatJarPackageWizardPage.LIBRARY_HANDLING" value="1"/>
-		<item key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME" value="MyClient - SocketClient"/>
-		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="D:\LTMang\eclipse-workspace\client.jar"/>
+		<item key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME" value="ATMClient - ATM"/>
+		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="D:\LTMang\eclipse-workspace\ATMClient.jar"/>
 		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="D:\LTMang\eclipse-workspace\ATMClient.jar"/>
+			<item value="D:\LTMang\eclipse-workspace\ATMServer.jar"/>
 			<item value="D:\LTMang\eclipse-workspace\client.jar"/>
 			<item value="D:\LTMang\eclipse-workspace\server.jar"/>
 		</list>
