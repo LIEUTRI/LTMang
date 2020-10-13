@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class ATMServer {
 	public static int port = 1998;
@@ -35,8 +36,9 @@ public class ATMServer {
 			while(true) {
 				s = ss.accept();
 				System.out.println("Connected to "+s.getInetAddress());
+				
 				ServerTask task = new ServerTask(s);
-				task.start();
+				task.start();				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

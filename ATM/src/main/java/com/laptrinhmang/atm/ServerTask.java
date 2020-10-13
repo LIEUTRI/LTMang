@@ -15,12 +15,14 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import components.AccountInfo;
+
 public class ServerTask extends Thread {
 	private Socket s;
 	public ServerTask(Socket s){
 		this.s = s;
 	}
-	public synchronized void run() {
+	public void run() {
 		try {
 			InputStream is = s.getInputStream();
 			OutputStream os = s.getOutputStream();
@@ -110,7 +112,9 @@ public class ServerTask extends Thread {
 					}
 					os.write(notify.getBytes());
 				} else if(cmd.indexOf("KT") >= 0) {
-					String report = "Balance: " + numberFormat.format(Double.parseDouble(getAccountBalance(cardnumber)));
+					double B = 0;
+					B = Double.parseDouble(getAccountBalance(cardnumber));
+					String report = "Balance: " + numberFormat.format(B);
 					os.write(report.getBytes());
 				}
 			}
@@ -118,7 +122,7 @@ public class ServerTask extends Thread {
 		}
 	}
 	
-	private synchronized boolean isLoginValid(String cardnumber, String PIN) {
+	private boolean isLoginValid(String cardnumber, String PIN) {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		InputStream fileAccount = classloader.getResourceAsStream("account.txt");
 		try {
@@ -137,7 +141,18 @@ public class ServerTask extends Thread {
 		return false;
 	}
 	
-	private synchronized String getAccountBalance(String cardnumber) {
+	private String getAccountBalance(String cardnumber) {
+		
+//		for(int i=1; i<=20; i++) {
+//			try {
+//				System.out.println("Count " + i);
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+		
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		InputStream fileAccount = classloader.getResourceAsStream("account.txt");
 		try {
@@ -156,7 +171,7 @@ public class ServerTask extends Thread {
 		return "";
 	}
 	
-	private synchronized void updateAccountBalance(String cardnumber, String amount) {
+	private void updateAccountBalance(String cardnumber, String amount) {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		InputStream fileAccount = classloader.getResourceAsStream("account.txt");
 		try {

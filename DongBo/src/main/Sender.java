@@ -6,14 +6,15 @@ class Sender
  public synchronized void send(String msg) 
  { 
      System.out.println("Sending\t"  + msg ); 
-     try
-     { 
-         Thread.sleep(1000); 
-     } 
-     catch (Exception e) 
-     { 
-         System.out.println("Thread  interrupted."); 
-     } 
+     for(int i=1; i<=20; i++) {
+			try {
+				System.out.println("Count " + i);
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
      System.out.println("\n" + msg + "Sent"); 
  } 
 } 
