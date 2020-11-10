@@ -3,6 +3,7 @@ package com.laptrinhmang.atm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,7 +18,8 @@ import java.util.TimerTask;
 
 import components.AccountInfo;
 
-public class ServerTask extends Thread {
+public class ServerTask extends Thread implements Serializable{
+	
 	private Socket s;
 	public ServerTask(Socket s){
 		this.s = s;
@@ -141,17 +143,17 @@ public class ServerTask extends Thread {
 		return false;
 	}
 	
-	private String getAccountBalance(String cardnumber) {
+	private synchronized String getAccountBalance(String cardnumber) {
 		
-//		for(int i=1; i<=20; i++) {
-//			try {
-//				System.out.println("Count " + i);
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		for(int i=1; i<=20; i++) {
+			try {
+				System.out.println("Count " + i);
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		InputStream fileAccount = classloader.getResourceAsStream("account.txt");
